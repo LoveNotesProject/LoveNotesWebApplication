@@ -19,7 +19,6 @@ namespace LoveNotesWebApplication.Pages
 
         public void OnGet()
         {
-
         }
     }
 }

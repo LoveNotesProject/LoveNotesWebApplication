@@ -4,8 +4,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -24,6 +26,17 @@ namespace LoveNotesWebApplication
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddRazorPages();
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.Cookie.Name = "lovenotes";
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always; //SSL
+                options.Cookie.SameSite = SameSiteMode.None;
+                options.Cookie.MaxAge = TimeSpan.FromHours(24);
+                
+                options.LoginPath = new PathString("/Login");
+            });
+
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -47,10 +60,7 @@ namespace LoveNotesWebApplication
 
             app.UseAuthorization();
 
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapRazorPages();
-            });
+            app.UseEndpoints(endpoints => { endpoints.MapRazorPages(); });
         }
     }
 }
